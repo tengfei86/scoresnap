@@ -12,7 +12,9 @@ import { Board, Player, ThemeName, LayoutName } from '@/lib/types';
 import { themes } from '@/lib/themes';
 import { useMatchTimer, useChessClock, formatTime } from '@/lib/timer';
 
-const STEP_OPTIONS = [1, 2, 5, 10];
+const DEFAULT_STEP_OPTIONS = [1, 2, 5, 10];
+const LARGE_STEP_OPTIONS = [10, 25, 50, 100];
+const XLARGE_STEP_OPTIONS = [50, 100, 200, 500];
 const THEME_LIST: ThemeName[] = ['modern-dark', 'neon', 'chalk', 'sport', 'clean'];
 const LAYOUT_LIST: { value: LayoutName; label: string; icon: string }[] = [
   { value: 'leaderboard', label: 'Leaderboard', icon: '📊' },
@@ -267,7 +269,7 @@ function ControlContent() {
         {!isBestOf && !isChessClock && (
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-400 shrink-0">Step:</span>
-            {STEP_OPTIONS.map(s => (
+            {(stepSize >= 50 ? XLARGE_STEP_OPTIONS : stepSize >= 10 ? LARGE_STEP_OPTIONS : DEFAULT_STEP_OPTIONS).map(s => (
               <button
                 key={s}
                 onClick={() => handleStepChange(s)}

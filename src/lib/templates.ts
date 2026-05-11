@@ -56,7 +56,7 @@ export const templates: ScoreTemplate[] = [
     desc: 'Mahjong scoring with larger increments',
     theme: 'chalk',
     layout: 'leaderboard',
-    stepSize: 10,
+    stepSize: 100,
     scoreMode: 'add',
     startScore: 0,
     suggestedPlayers: 4,
