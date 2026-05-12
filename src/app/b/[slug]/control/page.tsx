@@ -567,15 +567,38 @@ function ControlContent() {
               <button
                 key={l.value}
                 onClick={() => handleLayoutChange(l.value)}
-                className={`py-3 rounded-lg text-sm font-medium text-center transition-colors ${
+                className={`py-3 rounded-lg text-sm font-medium text-center transition-colors border-2 ${
                   board.layout === l.value
-                    ? 'bg-blue-600 text-white ring-2 ring-blue-400'
-                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                    ? 'border-blue-400 ring-2 ring-blue-400 bg-gray-800'
+                    : 'border-transparent bg-gray-800 text-gray-400 hover:border-gray-600'
                 }`}
               >
                 {l.icon} {l.label}
               </button>
             ))}
+          </div>
+          {/* Layout preview */}
+          <div className={`mt-3 rounded-xl p-3 ${themes[board.theme].bg} ${themes[board.theme].border} border transition-all duration-300`}>
+            <span className={`text-xs ${themes[board.theme].textSecondary}`}>Layout Preview</span>
+            <div className={`mt-2 ${
+              board.layout === 'versus' ? 'flex gap-3 justify-center' :
+              board.layout === 'grid' ? 'grid grid-cols-3 gap-2' :
+              'flex flex-col gap-1'
+            }`}>
+              {(board.layout === 'versus' ? players.slice(0, 2) : players.slice(0, board.layout === 'grid' ? 6 : 4)).map((p, i) => (
+                <div key={p.id} className={`rounded-lg p-2 text-center ${themes[board.theme].cardBg} ${
+                  board.layout === 'versus' ? 'flex-1' : ''
+                }`}>
+                  <div className={`text-xs truncate ${themes[board.theme].text}`}>{p.name}</div>
+                  <div className={`font-bold ${themes[board.theme].accent} ${
+                    board.layout === 'versus' ? 'text-2xl' : 'text-sm'
+                  }`}>{p.score}</div>
+                </div>
+              ))}
+              {board.layout === 'versus' && players.length >= 2 && (
+                <div className={`absolute-none text-xs ${themes[board.theme].textSecondary} self-center`} />
+              )}
+            </div>
           </div>
         </div>
 
