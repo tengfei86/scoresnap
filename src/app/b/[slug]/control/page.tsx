@@ -522,19 +522,40 @@ function ControlContent() {
         <div>
           <h3 className="text-sm font-semibold text-gray-400 mb-2">Theme</h3>
           <div className="grid grid-cols-5 gap-2">
-            {THEME_LIST.map(t => (
-              <button
-                key={t}
-                onClick={() => handleThemeChange(t)}
-                className={`py-2 px-1 rounded-lg text-xs font-medium text-center transition-colors ${
-                  board.theme === t
-                    ? 'bg-blue-600 text-white ring-2 ring-blue-400'
-                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-                }`}
-              >
-                {themes[t].label}
-              </button>
-            ))}
+            {THEME_LIST.map(t => {
+              const tc = themes[t];
+              return (
+                <button
+                  key={t}
+                  onClick={() => handleThemeChange(t)}
+                  className={`py-2 px-1 rounded-lg text-xs font-medium text-center transition-colors border-2 ${
+                    board.theme === t
+                      ? 'border-blue-400 ring-2 ring-blue-400'
+                      : 'border-transparent hover:border-gray-600'
+                  }`}
+                >
+                  <div className={`w-full h-6 rounded mb-1 ${tc.bg} ${tc.border} border`}>
+                    <div className={`w-3/4 mx-auto mt-1 h-2 rounded-sm ${tc.scoreBg}`} />
+                  </div>
+                  <span className="text-gray-300">{tc.label}</span>
+                </button>
+              );
+            })}
+          </div>
+          {/* Theme preview strip */}
+          <div className={`mt-3 rounded-xl p-3 ${themes[board.theme].bg} ${themes[board.theme].text} ${themes[board.theme].border} border transition-colors duration-300`}>
+            <div className="flex items-center justify-between">
+              <span className={`text-xs ${themes[board.theme].textSecondary}`}>Preview</span>
+              <span className={`text-sm font-bold ${themes[board.theme].accent}`}>{themes[board.theme].label}</span>
+            </div>
+            <div className="flex gap-2 mt-2">
+              {players.slice(0, 3).map(p => (
+                <div key={p.id} className={`flex-1 rounded-lg p-2 text-center ${themes[board.theme].cardBg}`}>
+                  <div className="text-xs truncate">{p.name}</div>
+                  <div className={`text-lg font-bold ${themes[board.theme].accent}`}>{p.score}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
