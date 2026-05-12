@@ -226,6 +226,12 @@ describe('matchTemplate - English Input', () => {
     expect(m!.id).toBe('basketball-3x3');
   });
 
+  it('3 players basketball → basketball-3x3 template', () => {
+    const m = matchTemplate('3 players basketball');
+    expect(m).not.toBeNull();
+    expect(m!.id).toBe('basketball-3x3');
+  });
+
   it('darts 501 → darts template', () => {
     const m = matchTemplate('darts 501');
     expect(m).not.toBeNull();

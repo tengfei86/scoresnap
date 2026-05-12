@@ -76,19 +76,6 @@ export const templates: ScoreTemplate[] = [
     keywords: ['soccer', 'football', 'hockey', 'match', 'game', '足球', '比赛', '对战', '排球', 'volleyball', 'handball'],
   },
   {
-    id: 'basketball-3x3',
-    name: '3x3 Basketball',
-    emoji: '🏀',
-    desc: 'Street-style 3x3, first to 21 wins',
-    theme: 'sport',
-    layout: 'versus',
-    stepSize: 1,
-    scoreMode: 'add',
-    startScore: 0,
-    suggestedPlayers: 2,
-    keywords: ['3x3', '3v3', '三人篮球', '三对三', 'streetball', '街球'],
-  },
-  {
     id: 'basketball-5v5',
     name: '5v5 Basketball',
     emoji: '🏀',
@@ -99,7 +86,20 @@ export const templates: ScoreTemplate[] = [
     scoreMode: 'add',
     startScore: 0,
     suggestedPlayers: 2,
-    keywords: ['basketball', '5v5', '5x5', '篮球', '五人篮球', '全场', 'nba'],
+    keywords: ['basketball', '5v5', '5x5', '5 player', '5 people', '篮球', '五人篮球', '全场', 'nba'],
+  },
+  {
+    id: 'basketball-3x3',
+    name: '3x3 Basketball',
+    emoji: '🏀',
+    desc: 'Street-style 3x3, first to 21 wins',
+    theme: 'sport',
+    layout: 'versus',
+    stepSize: 1,
+    scoreMode: 'add',
+    startScore: 0,
+    suggestedPlayers: 2,
+    keywords: ['3x3', '3v3', '3 player', '3 people', '三人篮球', '三对三', 'streetball', '街球', 'basketball'],
   },
   {
     id: 'racing',
@@ -257,21 +257,38 @@ export function matchTemplate(input: string): ScoreTemplate | null {
   
   let bestMatch: ScoreTemplate | null = null;
   let bestScore = 0;
+  let bestKeywordCount = 0;
 
   for (const t of templates) {
     let score = 0;
+    let keywordCount = 0;
     for (const kw of t.keywords) {
       if (lower.includes(kw.toLowerCase())) {
         // Longer keyword matches are worth more
         score += kw.length;
+        keywordCount++;
       }
     }
     // Also check template name
     if (lower.includes(t.name.toLowerCase())) {
       score += t.name.length;
+      keywordCount++;
     }
-    if (score > bestScore) {
+    // Boost: if input mentions a player count that matches suggestedPlayers
+    const playerCountMatch = lower.match(/(\d+)\s*(?:player|people|person|team|人)/i);
+    if (playerCountMatch) {
+      const count = parseInt(playerCountMatch[1], 10);
+      // For versus (2-team) templates, check if count matches half the player total
+      if (t.layout === 'versus' && count === t.suggestedPlayers) {
+        score += 5;
+      } else if (count === t.suggestedPlayers) {
+        score += 5;
+      }
+    }
+    // Prefer templates with more keyword hits (more specific match)
+    if (score > bestScore || (score === bestScore && keywordCount > bestKeywordCount)) {
       bestScore = score;
+      bestKeywordCount = keywordCount;
       bestMatch = t;
     }
   }
